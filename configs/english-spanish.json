@@ -1,0 +1,38 @@
+{
+    "languages": ["english", "german"],
+    "work_dir": "./english-german",
+    "skip_words_treshold": 3,
+    "translation_files": [
+        {
+            "fname": "europarl-v7.es-en.tgz",
+            "url": "http://www.statmt.org/europarl/v7/es-en.tgz",
+            "subdir": "europarl-en-es",
+            "extracted": [
+                "europarl-v7.es-en.en",
+                "europarl-v7.es-en.es"
+            ]
+        }
+    ],
+    "word_vector_files": {
+        "english": {
+            "fname": "cc.en.300.vec.gz",
+            "url":"https://s3-us-west-1.amazonaws.com/fasttext-vectors/cc.en.300.vec.gz",
+            "subdir": "fasttext-vectors",
+            "extracted": "cc.en.300.vec/cc.en.300.vec"
+        },
+        "spanish": {
+            "fname": "cc.es.300.vec.gz",
+            "url": "https://s3-us-west-1.amazonaws.com/fasttext-vectors/word-vectors-v2/cc.es.300.vec.gz",
+            "subdir": "fasttext-vectors",
+            "extracted": "cc.es.300.vec/cc.es.300.vec"
+        }
+    },
+    "hyper_parameters":
+        {
+            "batch_size": 32,
+            "lstm_units": 384,
+            "Tx": 40,
+            "Ty": 50,
+            "test_set_pct": 0.05
+        }
+}

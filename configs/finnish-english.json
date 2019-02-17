@@ -1,0 +1,49 @@
+{
+    "languages": ["finnish", "english"],
+    "work_dir": "./finnish-english",
+    "skip_words_treshold": 3,
+    "translation_files": [
+        {
+            "fname": "paracrawl-release1.en-fi.zipporah0-dedup-clean.tgz",
+            "url":"https://s3.amazonaws.com/web-language-models/paracrawl/release1/paracrawl-release1.en-fi.zipporah0-dedup-clean.tgz",
+            "subdir": "paracrawl-fi-en",
+            "extracted": [
+                "paracrawl-release1.en-fi.zipporah0-dedup-clean.fi", 
+                "paracrawl-release1.en-fi.zipporah0-dedup-clean.en"
+            ]
+        },
+        {
+            "fname": "europarl-v7.fi-en.tgz",
+            "url": "http://statmt.org/europarl/v7/fi-en.tgz",
+            "subdir": "europarl-fi-en",
+            "extracted": [
+                "europarl-v7.fi-en.fi", 
+                "europarl-v7.fi-en.en"
+            ]
+        }
+    ],
+    "word_vector_files": {
+        "finnish": {
+            "fname": "cc.fi.300.vec.gz",
+            "url": "https://s3-us-west-1.amazonaws.com/fasttext-vectors/word-vectors-v2/cc.fi.300.vec.gz",
+            "subdir": "fasttext-vectors",
+            "extracted": "cc.fi.300.vec/cc.fi.300.vec"
+        },
+        "english": {
+            "fname": "cc.en.300.vec.gz",
+            "url":"https://s3-us-west-1.amazonaws.com/fasttext-vectors/cc.en.300.vec.gz",
+            "subdir": "fasttext-vectors",
+            "extracted": "cc.en.300.vec/cc.en.300.vec"
+        }
+    },
+    "hyper_parameters":
+        {
+            "batch_size": 48,
+            "num_layers": 4,
+            "lstm_units": 512,
+            "Tx": 60,
+            "Ty": 40,
+            "beam_width": 1,
+            "test_set_pct": 0.05
+        }
+}
