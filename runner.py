@@ -142,7 +142,7 @@ class RunNMT:
                     break
             BLEU_SCORE /= batch
         print("Calculated BLEU score in {}".format(time.strftime("%H:%M:%S", time.gmtime(time.time() - t))))
-        print("BLEU score is {}".format(BLEU_SCORE))
+        print("BLEU score is {0:.3f}".format(BLEU_SCORE))
 
     def translate_interactive(self):
         self.model.build_graph()

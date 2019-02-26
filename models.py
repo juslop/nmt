@@ -3,9 +3,11 @@ from __future__ import absolute_import, division, print_function
 import numpy as np
 import tensorflow as tf
 
-def _lstm(*args, **kwargs):
-    # CUDNN for performance: https://returnn.readthedocs.io/en/latest/tf_lstm_benchmark.html
+def _encoder_cpu_lstm(*args, **kwargs):
     return tf.contrib.cudnn_rnn.CudnnCompatibleLSTMCell(*args, **kwargs)
+
+def _decoder_cpu_lstm(*args, **kwargs):
+    return tf.contrib.rnn.LSTMBlockCell(*args, **kwargs)
 
 class Encoder:
     def __init__(self, embeddings_shape, num_layers, units, is_training=False):
@@ -48,8 +50,8 @@ class Encoder:
 
     def _bidirectional(self, X):
         assert self.num_layers == 2, "only 2 layers allowed"
-        cell_fw = _lstm(self.units)
-        cell_bw = _lstm(self.units)
+        cell_fw = _encoder_cpu_lstm(self.units)
+        cell_bw = _encoder_cpu_lstm(self.units)
         outputs, _ = tf.nn.bidirectional_dynamic_rnn(
             cell_fw,
             cell_bw,
@@ -65,8 +67,8 @@ class Encoder:
     def _stacked_bidirectional(self, X):
         cells_fw, cells_bw = [], []
         for _ in range(self.num_layers // 2):
-            cells_fw.append(_lstm(self.units))
-            cells_bw.append(_lstm(self.units))
+            cells_fw.append(_encoder_cpu_lstm(self.units))
+            cells_bw.append(_encoder_cpu_lstm(self.units))
         outputs, _, _ = tf.contrib.rnn.stack_bidirectional_dynamic_rnn(
             cells_fw,
             cells_bw,
@@ -119,10 +121,9 @@ class BaseDecoder(object):
         attention_mechanism = tf.contrib.seq2seq.BahdanauAttention(
             num_units = self.units,
             memory = encoder_outputs)
-        cells = [_lstm(self.units) for _ in range(self.num_layers)]
-        cell = tf.nn.rnn_cell.MultiRNNCell(cells)
+        cells = [_decoder_cpu_lstm(self.units) for _ in range(self.num_layers)]
         ret = tf.contrib.seq2seq.AttentionWrapper(
-            cell = cell,
+            cell = tf.nn.rnn_cell.MultiRNNCell(cells),
             attention_mechanism = attention_mechanism,
             attention_layer_size = self.units)
         return ret, cells
@@ -179,7 +180,6 @@ class BeamSearchDecoder(BaseDecoder):
 
         decoder_cell, _ = self._decoder_cell(tiled_encoder_outputs)
         initial_state=decoder_cell.zero_state(self.batch_size*self.beam_width, dtype=tf.float32)
-        print(initial_state)
 
         decoder = tf.contrib.seq2seq.BeamSearchDecoder(
             cell = decoder_cell,

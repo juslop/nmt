@@ -29,8 +29,7 @@ NUMBER = '<NUMBER>'
 START = '<START>'
 EOL = '<EOL>'
 CHUNK_SIZE = 100000
-# single GPU limits embedding side
-# DICTIONARY_MAX_LENGTH = 250000
+DICTIONARY_MAX_LENGTH = 300000
 
 # downloaded files in windows...
 file_kwargs = {}
@@ -90,7 +89,7 @@ def process_line(sentence, dictionary, unk_index, sequence_len):
     return line
 
 def post_process_line(l):
-    #l = l.replace(EOL, "").rstrip()
+    l = l.replace(EOL, "").rstrip()
     for m in [' ,', ' .', ' ?', ' !']:
         l = l.replace(m, m.lstrip())
     for brackets in [('<', '>'), ('[', ']'), ('(', ')')]:
@@ -138,8 +137,8 @@ def create_dictionary(langs, filenames, skip_words_treshold, work_dir):
     for i in range(2):
         print("building dictionary for {}".format(langs[i]))
         words[i] = {k:v for k, v in words[i].items() if v >= skip_words_treshold}
-        ordered = OrderedDict(sorted(words[i].items(), key=lambda x: x[1]))
-        dict_list = list(ordered.keys()) #[:DICTIONARY_MAX_LENGTH]
+        ordered = OrderedDict(sorted(words[i].items(), key=lambda x: x[1], reverse=True))
+        dict_list = list(ordered.keys())[:DICTIONARY_MAX_LENGTH]
         dict_list = sorted(dict_list)
         #add unknown word to vocabulary
         dict_list += [UNK, START, NUMBER, EOL]
