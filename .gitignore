@@ -1,15 +1,9 @@
-
-model-report.txt
-test-summary.txt
 config.json
-original.*
 *-dict.txt
-fi-en/
-*-english/
+*-english/*
+weights/
 english-*/
-paracrawl*
 .DS*
-*.h5
 .vscode/
 
 # Byte-compiled / optimized / DLL files
