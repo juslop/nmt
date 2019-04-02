@@ -77,6 +77,11 @@ def _init_parser():
         help="set batch size. can be larger when translating to english.")
     train_parser.set_defaults(cmd="train")
 
+    weights_parser = subparsers.add_parser("save_weights", 
+        help="""    once trained enough, save weights only (no optimizer parameters).
+    """)
+    weights_parser.set_defaults(cmd="save_weights")
+
     translate_parser = subparsers.add_parser("translate",
         help="""    translate text.
     """)
@@ -159,6 +164,10 @@ def main():
         if args.load:
             kwargs["load_checkpoint"] = True
         instance.train(2, **kwargs)
+    elif action == 'save_weights':
+        instance = RunNMT(langs, Tx, Ty, num_layers,
+            lstm_units, 1, work_dir)
+        instance.save_weights()
     elif action == 'translate':
         if args.beam_width is not None:
             beam_width = args.beam_width

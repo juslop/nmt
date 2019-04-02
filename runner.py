@@ -16,6 +16,8 @@ class RunNMT:
     def __init__(self, languages, Tx, Ty, num_layers, units, batch_size, work_dir, lr=0.001, beam_width=1):
         self.checkpoint_dir = os.path.abspath('{}/{}-{}-checkpoints'.format(work_dir, languages[0], languages[1]))
         self.checkpoint_path = os.path.join(self.checkpoint_dir, "model.ckpt")
+        self.weights_dir = 'weights/{}-{}'.format(languages[0], languages[1])
+        self.weights_path = '{}/model.ckpt'.format(self.weights_dir)
         self.languages = languages
         self.work_dir = work_dir
         self.batch_size = batch_size
@@ -110,6 +112,22 @@ class RunNMT:
                 print("Model saved in path: %s" % save_path)
             print("training finished")
 
+    def save_weights(self):
+        # condense checkpoint to store infer graph weights only
+        self.model.build_graph()
+        trainable_variables, _ = self.model.get_variables()
+        saver = tf.train.Saver(var_list=trainable_variables)
+        if not os.path.exists(self.weights_dir):
+            os.makedirs(self.weights_dir)
+
+        with tf.Session() as sess:
+            #sess.run(tf.variables_initializer(non_trainable_vars))
+            sess.run(tf.global_variables_initializer())
+            saver.restore(sess, self.checkpoint_path)
+            self.model.initialize_embeddings(sess)
+            save_path = saver.save(sess, self.weights_path)
+            print("Weights saved in path: %s" % save_path)
+
     def validate(self):
         dictionary, _ = read_dictionary(self.languages, self.work_dir)
         end_index = get_end_index(dictionary[self.languages[1]])
@@ -154,9 +172,14 @@ class RunNMT:
 
         saver = tf.train.Saver(var_list=trainable_variables)
         with tf.Session() as sess:
-            #sess.run(tf.variables_initializer(non_trainable_vars))
             sess.run(tf.global_variables_initializer())
-            saver.restore(sess, self.checkpoint_path)
+            try:
+                saver.restore(sess, self.checkpoint_path)
+            except tf.errors.NotFoundError:
+                try:
+                    saver.restore(sess, self.weights_path)
+                except tf.errors.NotFoundError:
+                    raise Exception("Found no training checkpoint, no weights. Train model first.")
             self.model.initialize_embeddings(sess)
             while True:
                 sentence = input("Sentence to translate: ")
