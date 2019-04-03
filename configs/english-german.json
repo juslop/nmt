@@ -16,15 +16,15 @@
     "word_vector_files": {
         "english": {
             "fname": "cc.en.300.vec.gz",
-            "url":"https://s3-us-west-1.amazonaws.com/fasttext-vectors/cc.en.300.vec.gz",
+            "url":"https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.en.300.vec.gz",
             "subdir": "fasttext-vectors",
-            "extracted": "cc.en.300.vec/cc.en.300.vec"
+            "extracted": "cc.en.300.vec"
         },
         "german": {
             "fname": "cc.de.300.vec.gz",
-            "url": "https://s3-us-west-1.amazonaws.com/fasttext-vectors/word-vectors-v2/cc.de.300.vec.gz",
+            "url": "https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.de.300.vec.gz",
             "subdir": "fasttext-vectors",
-            "extracted": "cc.de.300.vec/cc.de.300.vec"
+            "extracted": "cc.de.300.vec"
         }
     },
     "hyper_parameters":
