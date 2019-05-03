@@ -43,13 +43,7 @@ class Encoder:
     def __call__(self, X):
         inputs = self._from_embeddings_lookup(X)
         inputs = tf.transpose(inputs, [1, 0, 2])
-        if tf.test.is_gpu_available():
-            encoder_outputs = self._cudnnLSTM(inputs)
-        else:
-            if self.num_layers == 2:
-                encoder_outputs = self._bidirectional(inputs)
-            else:
-                encoder_outputs = self._stacked_bidirectional(inputs)
+        encoder_outputs = self._cudnnLSTM(inputs)
         return tf.transpose(encoder_outputs, [1, 0, 2])
 
     def _from_embeddings_lookup(self, X):
@@ -63,52 +57,6 @@ class Encoder:
             self.cells_fw = encoder_lstm
             return outputs
 
-    def _bidirectional(self, X):
-        assert self.num_layers == 2, "only 2 layers allowed"
-        cell_fw = _encoder_cpu_lstm(self.units)
-        cell_bw = _encoder_cpu_lstm(self.units)
-        outputs, _ = tf.nn.bidirectional_dynamic_rnn(
-            cell_fw,
-            cell_bw,
-            X,
-            time_major=True,
-            dtype=tf.float32,
-            scope="encoder"
-        )
-        self.cells_fw = [cell_fw]
-        self.cells_bw = [cell_bw]
-        return tf.concat(outputs, -1)
-
-    def _stacked_bidirectional(self, X):
-        cells_fw, cells_bw = [], []
-        for _ in range(self.num_layers // 2):
-            cells_fw.append(_encoder_cpu_lstm(self.units))
-            cells_bw.append(_encoder_cpu_lstm(self.units))
-        outputs, _, _ = tf.contrib.rnn.stack_bidirectional_dynamic_rnn(
-            cells_fw,
-            cells_bw,
-            X,
-            dtype = tf.float32,
-            time_major=True,
-            scope="encoder"
-        )
-        self.cells_fw = cells_fw
-        self.cells_bw = cells_bw
-        return outputs
-
-    def log_to_tensorboard(self):
-        if tf.test.is_gpu_available():
-            #tf.summary.histogram("Encoder", self.cells_fw)
-            pass
-        else:
-            for i, cell in enumerate(self.cells_fw):
-                kernel, bias = cell.variables
-                tf.summary.histogram("Encoder-{} FW Kernel".format(i), kernel)
-                tf.summary.histogram("Encoder-{} FW Bias".format(i), bias)
-            for i, cell in enumerate(self.cells_bw):
-                kernel, bias = cell.variables
-                tf.summary.histogram("Encoder-{} BW Kernel".format(i), kernel)
-                tf.summary.histogram("Encoder-{} BW Bias".format(i), bias)
 
 class BaseDecoder(object):
     def __init__(self, Ty, embeddings_shape, to_start_index, end_index, vocabulary_size, num_layers, units, batch_size, is_training=False):

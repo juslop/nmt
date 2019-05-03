@@ -29,6 +29,7 @@ from get_data import get_embedding_matrix
 
 class RunNMT:
     def __init__(self, languages, Tx, Ty, num_layers, units, batch_size, work_dir, lr=0.001, beam_width=1):
+        assert tf.test.is_gpu_available(), "This application requires GPU to run."
         self.checkpoint_dir = os.path.abspath('{}/{}-{}-checkpoints'.format(work_dir, languages[0], languages[1]))
         self.checkpoint_path = os.path.join(self.checkpoint_dir, "model.ckpt")
         self.weights_dir = 'weights/{}-{}'.format(languages[0], languages[1])
@@ -57,7 +58,6 @@ class RunNMT:
         return dataset
 
     def train(self, epochs, load_checkpoint=False):
-        assert tf.test.is_gpu_available(), "training requires GPU."
         print_interval = 500
 
         self.model.build_graph(is_training=True)

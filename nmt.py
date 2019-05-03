@@ -91,7 +91,6 @@ class NMTModel:
             self._outputs = tf.placeholder(tf.int32, shape=(self.batch_size, self.Ty), name='outputs')
             self.optimizer = tf.train.AdamOptimizer(self.lr)
             encoder_outputs = self.encoder(self._inputs)
-            self.encoder.log_to_tensorboard()
             outputs = self.decoder(encoder_outputs, self._outputs)
             loss = self._loss(outputs, self._outputs)
             self._train_ops = self._backwards(loss)

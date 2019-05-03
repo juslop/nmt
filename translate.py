@@ -85,11 +85,6 @@ def _init_parser():
     translate_parser = subparsers.add_parser("translate",
         help="""    translate text.
     """)
-    group = translate_parser.add_mutually_exclusive_group(required=True)
-    group.add_argument("-s", "--sentence", 
-        help="sentence to translate  single sentence and show attention plot")
-    group.add_argument("-i", "--interactive", action="store_true",
-        help="prompt sentencies to translate in loop, exit() to quit")
     translate_parser.add_argument("-b", "--beam-width", type=int, 
         help="set beam width for beam decoder.")
     translate_parser.set_defaults(cmd="translate")
