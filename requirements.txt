@@ -1,7 +1,0 @@
-numpy==1.15.4
-h5py==2.8.0
-pandas==0.24.0
-deepdish==0.3.6
-tensorflow==1.12.0
-sklearn
-nltk==3.4
