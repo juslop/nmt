@@ -52,7 +52,7 @@ class Encoder:
 
     def _cudnnLSTM(self, X):
         with tf.variable_scope("encoder"):
-            encoder_lstm = tf.contrib.cudnn_rnn.CudnnLSTM(self.num_layers, self.units, direction="bidirectional")
+            encoder_lstm = tf.contrib.cudnn_rnn.CudnnLSTM(self.num_layers // 2, self.units, direction="bidirectional")
             outputs, _ = encoder_lstm(X, training=self.is_training)
             self.cells_fw = encoder_lstm
             return outputs
