@@ -59,6 +59,7 @@ class RunNMT:
 
     def train(self, epochs, load_checkpoint=False):
         print_interval = 500
+        use_tensorboard = os.environ.get("USE_TENSORBOARD") is not None
 
         self.model.build_graph(is_training=True)
         dataset = self.create_dataset()
@@ -72,11 +73,11 @@ class RunNMT:
         else:
             trainable_variables, non_trainable_vars = self.model.get_variables()
             saver = tf.train.Saver(var_list=trainable_variables)
-
         merged = tf.summary.merge_all()
 
         with tf.Session() as sess:
-            summary_writer = tf.summary.FileWriter(os.path.join(self.work_dir, "tensorboard"), graph=sess.graph)
+            if use_tensorboard:
+                summary_writer = tf.summary.FileWriter(os.path.join(self.work_dir, "tensorboard"), graph=sess.graph)
             if not load_checkpoint:
                 sess.run(init)
             else:
@@ -94,7 +95,7 @@ class RunNMT:
                 while True:
                     try:
                         x_batch, y_batch = sess.run(next_element)
-                        if batch % 100:
+                        if (not use_tensorboard) or batch % 100:
                             loss, _ = sess.run([self.model.cost, self.model.train_ops], 
                                 feed_dict={self.model.inputs: x_batch, self.model.outputs: y_batch})
                         else:
