@@ -67,7 +67,7 @@ class RunNMT:
         for v in tf.get_collection_ref(tf.GraphKeys.GLOBAL_VARIABLES):
             print(v.name, v.shape)
 
-        trainable_weights = self.model.get_trainable_weights()
+        trainable_weights = self.model.get_weights()
         saver = tf.train.Saver(var_list=trainable_weights)
         merged = tf.summary.merge_all()
 
