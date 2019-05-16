@@ -20,7 +20,7 @@ import os, shutil
 import time
 import tensorflow as tf
 import nltk
-from nmt import NMTModel
+from nmt_model import NMTModel
 from prepare import (read_dictionary, get_training_data, 
     get_unk_index, get_end_index, process_line, indexes_to_words,
     process_line, post_process_line, get_start_index)
