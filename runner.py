@@ -67,21 +67,17 @@ class RunNMT:
         for v in tf.get_collection_ref(tf.GraphKeys.GLOBAL_VARIABLES):
             print(v.name, v.shape)
 
-        if not load_checkpoint:
-            init = tf.global_variables_initializer()
-            saver = tf.train.Saver()
-        else:
-            trainable_variables, non_trainable_vars = self.model.get_variables()
-            saver = tf.train.Saver(var_list=trainable_variables)
+        trainable_weights = self.model.get_trainable_weights()
+        saver = tf.train.Saver(var_list=trainable_weights)
         merged = tf.summary.merge_all()
 
         with tf.Session() as sess:
             if use_tensorboard:
                 summary_writer = tf.summary.FileWriter(os.path.join(self.work_dir, "tensorboard"), graph=sess.graph)
             if not load_checkpoint:
-                sess.run(init)
+                sess.run(tf.global_variables_initializer())
             else:
-                sess.run(tf.variables_initializer(non_trainable_vars))
+                sess.run(tf.global_variables_initializer())
                 saver.restore(sess, self.checkpoint_path)
             self.model.initialize_embeddings(sess)
 
@@ -131,13 +127,12 @@ class RunNMT:
     def save_weights(self):
         # condense checkpoint to store infer graph weights only
         self.model.build_graph()
-        trainable_variables, _ = self.model.get_variables()
+        trainable_variables = self.model.get_weights()
         saver = tf.train.Saver(var_list=trainable_variables)
         if not os.path.exists(self.weights_dir):
             os.makedirs(self.weights_dir)
 
         with tf.Session() as sess:
-            #sess.run(tf.variables_initializer(non_trainable_vars))
             sess.run(tf.global_variables_initializer())
             saver.restore(sess, self.checkpoint_path)
             self.model.initialize_embeddings(sess)
@@ -148,7 +143,7 @@ class RunNMT:
         dictionary, _ = read_dictionary(self.languages, self.work_dir)
         end_index = get_end_index(dictionary[self.languages[1]])
         self.model.build_graph()
-        trainable_variables, _ = self.model.get_variables()
+        trainable_variables = self.model.get_weights()
         saver = tf.train.Saver(var_list=trainable_variables)
         test_dataset = self.create_validationset()
         with tf.Session() as sess:
@@ -181,7 +176,7 @@ class RunNMT:
     def translate_interactive(self):
         self.model.build_graph()
         index_to_word_map = self.model.index_to_word_map[self.model.languages[1]]
-        trainable_variables, _ = self.model.get_variables()
+        trainable_variables = self.model.get_weights()
 
         for v in tf.get_collection_ref(tf.GraphKeys.GLOBAL_VARIABLES):
             print(v.name, v.shape)

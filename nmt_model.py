@@ -101,10 +101,12 @@ class NMTModel:
             encoder_outputs = self.encoder(self._inputs)
             self._translation = self.decoder(encoder_outputs)
 
-    def get_variables(self):
-        trainable_variables = [v for v in tf.get_collection_ref(tf.GraphKeys.GLOBAL_VARIABLES) if not "embeddings" in v.name]
-        non_trainable_vars = [self.encoder.from_embeddings, self.decoder.to_embeddings]
-        return trainable_variables, non_trainable_vars
+    def get_weights(self):
+        trainable_variables = []
+        for v in tf.get_collection_ref(tf.GraphKeys.GLOBAL_VARIABLES):
+            if (not "embeddings" in v.name) and (not "Adam" in v.name):
+                trainable_variables.append(v)
+        return trainable_variables
 
     @property
     def cost(self):
