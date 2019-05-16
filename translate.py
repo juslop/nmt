@@ -109,6 +109,7 @@ def main():
     args = _init_parser()
 
     work_dir = data["work_dir"]
+    translation_files = data['translation_files']
 
     # sentence max length, Tx for first language, Ty for the other
     Tx = data["hyper_parameters"]["Tx"]
@@ -131,21 +132,21 @@ def main():
     if not os.path.exists(work_dir):
         os.makedirs(work_dir)
     if action == 'dictionary':
-        file_pairs = get_data()
+        file_pairs = get_data(translation_files)
         create_dictionary(languages, file_pairs, skip_words_treshold, work_dir)
     elif action == 'glove':
         dictionaries, _ = read_dictionary(languages, work_dir)
-        fetch_glove_vectors(languages, dictionaries, work_dir)
+        fetch_glove_vectors(languages, dictionaries, work_dir, data)
     elif action == 'prepare':
-        file_pairs = get_data()
+        file_pairs = get_data(translation_files)
         convert_words_to_indexes(languages, file_pairs, work_dir, Tx, Ty, test_set_pct)
     elif action == 'build_all':
         # note: tensorflow keras utils do not extract all data types so this may fail, at least so in Windows. 
         # Recommend build in pieces and check every step.
-        file_pairs = get_data()
+        file_pairs = get_data(translation_files)
         create_dictionary(languages, file_pairs, skip_words_treshold, work_dir)
         dictionaries, _ = read_dictionary(languages, work_dir)
-        fetch_glove_vectors(languages, dictionaries, work_dir)
+        fetch_glove_vectors(languages, dictionaries, work_dir, data)
         convert_words_to_indexes(languages, file_pairs, work_dir, Tx, Ty, test_set_pct)
     elif action == 'train':
         kwargs={}

@@ -31,16 +31,12 @@ https://fasttext.cc/docs/en/support.html
 }
 '''
 
-with open('config.json') as json_data_file:
-    data = json.load(json_data_file)
-
 EMBEDDING_SIZE = 300
 
-def get_data():
+def get_data(translation_files):
     '''
     fetches language training data files from .keras cache or from net
     '''
-    translation_files = data['translation_files']
     file_pairs = []
     for tgt in translation_files:
         path = get_file(
@@ -52,8 +48,8 @@ def get_data():
         file_pairs.append([os.path.join(dirname, tgt["extracted"][i]) for i in range(2)])
     return file_pairs
 
-def _get_vectors(lang):
-    vf = data['word_vector_files'][lang]
+def _get_vectors(lang, conf_dict):
+    vf = conf_dict['word_vector_files'][lang]
     path = get_file(
         vf["fname"],
         origin=vf["url"],
@@ -92,7 +88,7 @@ def _embedding_matrix_path(language, work_dir):
     return os.path.join(work_dir, "{}-embeddings.npy".format(language))
 
 
-def fetch_glove_vectors(languages, dictionaries, work_dir):
+def fetch_glove_vectors(languages, dictionaries, work_dir, conf_dict):
     '''
     fetches glove vectors for languages and builds embedding matrix for the previously
     buildt dictionary. Saves embedding matrixes to disk.
@@ -100,7 +96,7 @@ def fetch_glove_vectors(languages, dictionaries, work_dir):
     for lang in languages:
         dictionary = dictionaries[lang]
         print("fetching glove vectors for {}".format(lang))
-        path = _get_vectors(lang)
+        path = _get_vectors(lang, conf_dict)
         embeddings = _process_glove_vectors(path)
         embedding_matrix = _dictionary_to_glove_vector_map(lang, dictionary, embeddings, work_dir)
         filename = _embedding_matrix_path(lang, work_dir)
