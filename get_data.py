@@ -16,6 +16,7 @@
 
 from tensorflow.keras.utils import get_file
 import os, io
+import gzip, shutil
 import json
 import numpy as np
 
@@ -56,8 +57,12 @@ def _get_vectors(lang, conf_dict):
         cache_subdir=vf["subdir"],
         extract=True
     ) 
-    # in windows need manually to extract
-    return os.path.join(os.path.dirname(path), vf["extracted"])
+    infile = os.path.join(os.path.dirname(path), vf["fname"])
+    outfile = os.path.join(os.path.dirname(path), vf["extracted"])
+    with gzip.open(infile, 'rb') as f_in:
+        with open(outfile, 'wb') as f_out:
+            shutil.copyfileobj(f_in, f_out)
+    return outfile
 
 def _process_glove_vectors(filename):
     embeddings = {}
