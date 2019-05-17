@@ -112,8 +112,7 @@ def main():
     translation_files = data['translation_files']
 
     # sentence max length, Tx for first language, Ty for the other
-    Tx = data["hyper_parameters"]["Tx"]
-    Ty = data["hyper_parameters"]["Ty"]
+    seq_lens = [data["hyper_parameters"]["Tx"], data["hyper_parameters"]["Ty"]]
     batch_size = data["hyper_parameters"]["batch_size"]
     num_layers = data["hyper_parameters"]["num_layers"]
     lstm_units = data["hyper_parameters"]["lstm_units"]
@@ -124,10 +123,10 @@ def main():
     action = args.cmd
     if args.reverse:
         langs.reverse()
-        tmp = Tx
-        Tx = Ty
-        Tx = tmp
+        seq_lens.reverse()
     languages = tuple(langs)
+    Tx = seq_lens[0]
+    Ty=seq_lens[1]
 
     if not os.path.exists(work_dir):
         os.makedirs(work_dir)
