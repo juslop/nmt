@@ -14,7 +14,7 @@
 #   limitations under the License.
 #
 
-from tensorflow.keras.utils import get_file
+import tensorflow as tf
 import os, io
 import gzip, shutil
 import json
@@ -40,7 +40,7 @@ def get_data(translation_files):
     '''
     file_pairs = []
     for tgt in translation_files:
-        path = get_file(
+        path = tf.keras.utils.get_file(
             tgt["fname"],
             origin=tgt["url"],
             cache_subdir=tgt["subdir"],
@@ -51,7 +51,7 @@ def get_data(translation_files):
 
 def _get_vectors(lang, conf_dict):
     vf = conf_dict['word_vector_files'][lang]
-    path = get_file(
+    path = tf.keras.utils.get_file(
         vf["fname"],
         origin=vf["url"],
         cache_subdir=vf["subdir"],
