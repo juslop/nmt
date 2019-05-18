@@ -28,7 +28,7 @@ from get_data import get_embedding_matrix
 
 
 class RunNMT:
-    def __init__(self, languages, Tx, Ty, num_layers, units, batch_size, work_dir, lr=0.001, beam_width=1, save_hourly=True):
+    def __init__(self, languages, Tx, Ty, num_layers, units, batch_size, work_dir, lr=0.001, beam_width=1, save_interval=3600):
         assert tf.test.is_gpu_available(), "This application requires GPU to run."
         self.checkpoint_dir = os.path.abspath('{}/{}-{}-checkpoints'.format(work_dir, languages[0], languages[1]))
         self.checkpoint_path = os.path.join(self.checkpoint_dir, "model.ckpt")
@@ -38,7 +38,7 @@ class RunNMT:
         self.work_dir = work_dir
         self.batch_size = batch_size
         self.epoch_steps = None
-        self.save_hourly = save_hourly
+        self.save_interval = save_interval
         self.model = NMTModel(languages, Tx, Ty, num_layers, units, batch_size, work_dir, lr=lr, beam_width=beam_width)
 
     def create_dataset(self, test=False):
@@ -105,7 +105,7 @@ class RunNMT:
                             print("Epoch {} avg loss batches {}-{} = {:.4f}".format(epoch + 1, batch - print_interval + 2, batch + 1, cost/500))
                             cost = 0
                         batch += 1
-                        if self.save_hourly and time.time() - t > 3600:
+                        if time.time() - t > self.save_interval:
                             # brute force remove all old checkpoints
                             try:
                                 shutil.rmtree(self.checkpoint_dir)

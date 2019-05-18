@@ -125,7 +125,7 @@ def main():
         seq_lens.reverse()
     languages = tuple(langs)
     Tx = seq_lens[0]
-    Ty=seq_lens[1]
+    Ty = seq_lens[1]
 
     print("Configured for {} --> {}".format(languages[0], languages[1]))
 
