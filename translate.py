@@ -104,7 +104,6 @@ def main():
     with open('config.json') as json_data_file:
         data = json.load(json_data_file)
     langs = data["languages"]
-    print("Configured for {} --> {}".format(langs[0], langs[1]))
 
     args = _init_parser()
 
@@ -127,6 +126,8 @@ def main():
     languages = tuple(langs)
     Tx = seq_lens[0]
     Ty=seq_lens[1]
+
+    print("Configured for {} --> {}".format(languages[0], languages[1]))
 
     if not os.path.exists(work_dir):
         os.makedirs(work_dir)
