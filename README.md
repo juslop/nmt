@@ -39,15 +39,15 @@ Ready to train language configurations: english-german-english, english-spanish-
 
 ## Try out a trained model in Google Colab (from finnish to english only sorry):
 
-- Google Research provides free service to try out machine learning apps [link](https://colab.research.google.com)
-- In Colab select GITHUB and type address to this repo: https://github.com/juslop/nmt.git
-- pick colab/fin_eng_translate.ipynb
-- download weights, embeddings and dictionaries
+- download weights, embeddings and dictionaries to local disk
   - [dictionaries, embeddings](https://drive.google.com/file/d/1SMxGnlWW2YwZmxRSR5cpLkHeZBFxxp__/view?usp=sharing)
   - [weights](https://drive.google.com/file/d/1dkJ7uCQ3qaAxb6CSki1eqKfkhu5B5YT-/view?usp=sharing)
   - Note: Google drive complains about not able to virus scan a large file
-  - once on your local disk upload to colab or your gdrive, update the paths in the Jupyter note book 
-  - start running
+- Google Research provides free service to try out machine learning apps [link](https://colab.research.google.com)
+- In Colab select GITHUB and type address to this repo: https://github.com/juslop/nmt.git
+- pick colab/fin_eng_translate.ipynb
+- upload both downloaded files to colab or your gdrive, update the path_to_tarballs variable to point to uploaded files in the Jupyter note book
+- start running
 
 ## Observations & learnings
 
