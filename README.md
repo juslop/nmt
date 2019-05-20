@@ -1,8 +1,18 @@
 # nmt
 
-Natural language machine translation experimental supervised deep learning application using Tensorflow 1.13 and Nvidia Cuda 10.0
+Experimental supervised deep learning neural machine translation application using Tensorflow 1.13 and Nvidia Cuda 10.0
 
 Ready to train language configurations: english-german-english, english-spanish-english, english-finnish-english.
+
+## Architecture papers
+
+[Attention model](https://arxiv.org/abs/1409.0473)
+
+[State of the art](https://arxiv.org/pdf/1703.03906.pdf)
+
+## Nmt explained in brief
+
+[Intro to neural machine translation](https://machinelearningmastery.com/introduction-neural-machine-translation/)
 
 ## Install: 
 
