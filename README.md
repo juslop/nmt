@@ -48,6 +48,8 @@ Ready to train language configurations: english-german-english, english-spanish-
 - pick colab/fin_eng_translate.ipynb
 - upload both downloaded files to colab or your gdrive, update the path_to_tarballs variable to point to uploaded files in the Jupyter note book
 - start running
+  - type a sentence to translate to prompt box, ui is messy in colab, but prompt is there and hit enter
+  - type exit() to quit
 
 ## Observations & learnings
 
