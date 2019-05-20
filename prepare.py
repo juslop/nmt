@@ -29,6 +29,7 @@ NUMBER = '<NUMBER>'
 START = '<START>'
 EOL = '<EOL>'
 CHUNK_SIZE = 100000
+MAX_LINES_IN_FILE = 3000000
 DICTIONARY_MAX_LENGTH = 300000
 
 # downloaded files in windows...
@@ -120,13 +121,17 @@ def create_dictionary(langs, filenames, skip_words_treshold, work_dir):
     filenames -- list of filepairs containing the texts
     work_dir -- where to store dictionary
     '''
-    print("preparing dictionary")
+    print("preparing dictionary for {}-{} skip word treshold {}".format(langs[0], langs[1], skip_words_treshold))
     words = [{}, {}]
     for files in filenames:
         for i in range(2):
             print("processing file: {}".format(files[i]))
+            line_cnt = 0
             with open(files[i], **file_kwargs) as fp:
                 for line in fp:
+                    line_cnt += 1
+                    if line_cnt > MAX_LINES_IN_FILE:
+                        break
                     sentence = clean_line(line).split()
                     for word in sentence:
                         word = word.strip()
@@ -179,20 +184,6 @@ def read_dictionary(languages, work_dir):
         index_to_word_map[lang] = loaded['index_to_word_map']
     return dct, index_to_word_map
 
-def _read_text_chunk(fp):
-    '''
-    read a chunk or sentences from training data file
-    lines -- list of word indexes
-    '''
-    CHUNK_SIZE = 100000
-    lines = []
-    for _ in range(CHUNK_SIZE):
-        line = fp.readline()
-        if not line:
-            break
-        lines.append(line)
-    return lines
-
 def _make_test_sets(arr, test_set_size):
     '''
     splits data to training and validation sets
@@ -217,17 +208,17 @@ def convert_words_to_indexes(langs, filenames, work_dir, Tx, Ty, test_set_size):
             print("processing file: {}".format(filename))
             sequence_len = Tx if i == 0 else Ty
             unk_index = get_unk_index(dct[langs[i]])
+            indexes = []
             with open(files[i], **file_kwargs) as fp:
-                while True:
-                    lines = _read_text_chunk(fp)
-                    if len(lines) == 0:
+                line_cnt = 0
+                for sentence in fp:
+                    line_cnt += 1
+                    if line_cnt > MAX_LINES_IN_FILE:
                         break
-                    indexes = []
-                    for sentence in lines:
-                        indexes.append(process_line(sentence, dct[langs[i]],
-                            unk_index, sequence_len))
-                    assert len(indexes[0]) == sequence_len, "wrong size {}".format(len(indexes[0]))
-                    all_indexes[i] = np.append(all_indexes[i], indexes, axis=0)
+                    indexes.append(process_line(sentence, dct[langs[i]],
+                        unk_index, sequence_len))
+                assert len(indexes[0]) == sequence_len, "wrong size {}".format(len(indexes[0]))
+                all_indexes[i] = np.append(all_indexes[i], indexes, axis=0)
     assert all_indexes[0].shape[0] == all_indexes[1].shape[0],  "training data length mismatch"
     #test indexing
     assert index_to_wordmap["english"][dct["english"]["is"]] == "is", "mapping incorrect"

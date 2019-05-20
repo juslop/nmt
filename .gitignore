@@ -2,6 +2,7 @@ config.json
 *-dict.txt
 *-english/*
 weights/
+tarballs/
 english-*/
 .DS*
 .vscode/

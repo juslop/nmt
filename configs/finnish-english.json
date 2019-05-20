@@ -1,6 +1,6 @@
 {
     "languages": ["finnish", "english"],
-    "work_dir": "./finnish-english",
+    "work_dir": "finnish-english",
     "skip_words_treshold": 3,
     "translation_files": [
         {
@@ -38,12 +38,12 @@
     },
     "hyper_parameters":
         {
-            "batch_size": 48,
-            "num_layers": 4,
-            "lstm_units": 512,
+            "batch_size": 32,
+            "num_layers": 6,
+            "lstm_units": 640,
             "Tx": 60,
             "Ty": 40,
             "beam_width": 1,
-            "test_set_pct": 0.05
+            "test_set_pct": 0.02
         }
 }

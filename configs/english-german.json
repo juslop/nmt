@@ -4,6 +4,15 @@
     "skip_words_treshold": 3,
     "translation_files": [
         {
+            "fname": "paracrawl-release1.en-de.zipporah0-dedup-clean.tgz",
+            "url":"https://s3.amazonaws.com/web-language-models/paracrawl/release1/paracrawl-release1.en-de.zipporah0-dedup-clean.tgz",
+            "subdir": "paracrawl-de-en",
+            "extracted": [
+                "paracrawl-release1.en-de.zipporah0-dedup-clean.de", 
+                "paracrawl-release1.en-de.zipporah0-dedup-clean.en"
+            ]
+        },
+        {
             "fname": "europarl-v7.de-en.tgz",
             "url": "http://statmt.org/europarl/v7/de-en.tgz",
             "subdir": "europarl-en-de",
@@ -30,9 +39,11 @@
     "hyper_parameters":
         {
             "batch_size": 32,
-            "lstm_units": 384,
-            "Tx": 30,
-            "Ty": 40,
-            "test_set_pct": 0.05
+            "num_layers": 6,
+            "lstm_units": 640,
+            "Tx": 40,
+            "Ty": 60,
+            "beam_width": 1,
+            "test_set_pct": 0.02
         }
 }
