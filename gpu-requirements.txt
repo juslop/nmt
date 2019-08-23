@@ -5,4 +5,4 @@ tables==3.5.1
 deepdish==0.3.6
 tensorflow-gpu==1.13.1
 sklearn
-nltk==3.4
+nltk==3.4.5
