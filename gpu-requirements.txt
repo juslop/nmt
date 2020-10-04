@@ -3,6 +3,6 @@ h5py==2.9.0
 pandas==0.24.2
 tables==3.5.1
 deepdish==0.3.6
-tensorflow-gpu==1.13.1
+tensorflow-gpu==1.15.4
 sklearn
 nltk==3.4.5
